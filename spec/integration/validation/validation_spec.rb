@@ -30,6 +30,7 @@ describe 'validations' do
       let(:doc) { SimpleDocument.create(:field1 => 'ohai') }
 
       it 'prevents create if invalid' do
+        SimpleDocument.create(:field1 => nil).persisted?.should == false
         SimpleDocument.count.should == 0
       end
 
@@ -44,38 +45,40 @@ describe 'validations' do
         it 'returns false for save?' do
           doc.field1 = nil
           doc.save?.should == false
+          doc.save.should == false
         end
       end
 
       it 'returns false for update?' do
         doc.update?(:field1 => nil).should == false
+        doc.update(:field1 => nil).should == false
       end
     end
 
-    context 'when using the normal version' do
+    context 'when using the bang version' do
       let(:doc) { SimpleDocument.create(:field1 => 'ohai') }
 
       it 'throws an exception for create' do
-        expect { SimpleDocument.create }
+        expect { SimpleDocument.create! }
           .to raise_error(NoBrainer::Error::DocumentInvalid, /Field1 can't be blank/)
       end
 
       context 'when passing :validate => false' do
-        it 'returns true for save' do
+        it 'returns true for save?' do
           doc.field1 = nil
           doc.save?(:validate => false).should == true
         end
       end
 
       context 'when passing nothing' do
-        it 'throws an exception for save' do
+        it 'throws an exception for save!' do
           doc.field1 = nil
-          expect { doc.save }.to raise_error(NoBrainer::Error::DocumentInvalid)
+          expect { doc.save! }.to raise_error(NoBrainer::Error::DocumentInvalid)
         end
       end
 
-      it 'throws an exception for update' do
-        expect { doc.update(:field1 => nil) }.to raise_error(NoBrainer::Error::DocumentInvalid)
+      it 'throws an exception for update!' do
+        expect { doc.update!(:field1 => nil) }.to raise_error(NoBrainer::Error::DocumentInvalid)
       end
     end
   end
