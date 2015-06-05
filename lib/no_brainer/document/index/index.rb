@@ -14,11 +14,11 @@ class NoBrainer::Document::Index::Index < Struct.new(
   end
 
   def same_definition?(other)
-    # allow name to change through renames
-    self.model == other.model &&
-    self.geo == other.geo &&
-    self.multi == other.multi &&
-    self.serialized_rql_proc == other.serialized_rql_proc
+    self.name == other.name # if name is same, consider same
+    #&&
+    # self.geo == other.geo &&
+    # self.multi == other.multi &&
+    # self.serialized_rql_proc == other.serialized_rql_proc
   end
 
   def human_name
