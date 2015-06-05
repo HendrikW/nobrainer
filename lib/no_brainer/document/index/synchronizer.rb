@@ -49,7 +49,7 @@ class NoBrainer::Document::Index::Synchronizer
 
   def sync_indexes(options={})
     plan = generate_plan
-    plan.each { |op| op.run(options) }
+    plan.each { |op| op.run(options) unless op.op == :delete && options[:delete] == false }
     unless options[:wait] == false
       models = plan.map(&:index).map(&:model).uniq
       models.each { |model| NoBrainer.run(model.rql_table.index_wait()) }
